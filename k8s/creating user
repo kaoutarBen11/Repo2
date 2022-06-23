@@ -1,0 +1,139 @@
+
+CREATING A USER:
+
+1)Create private key & request for csr:
+openssl genrsa -out newuser2.key 2048
+openssl req -new -key newuser2.key -out newuser2.csr
+*************openssl req -new -key newuser2.key -out newuser2.csr -subj "/CN=newuser2/O=admin"
+
+2)request is the base64 encoded value of the CSR file content: 
+cat newuser2.csr | base64 | tr -d "\n"
+
+3)Create CertificateSigningRequest: (and copy the output of request from the previous qestion and paste it in this request)
+cat <<EOF | kubectl apply -f -
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: newuser2
+spec:
+  request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ2lqQ0NBWElDQVFBd1JURUxNQWtHQTFVRUJoTUNRVlV4RXpBUkJnTlZCQWdNQ2xOdmJXVXRVM1JoZEdVeApEakFNQmdOVkJBb01CV0ZrYldsdU1SRXdEd1lEVlFRRERBaHVaWGQxYzJWeU1qQ0NBU0l3RFFZSktvWklodmNOCkFRRUJCUUFEZ2dFUEFEQ0NBUW9DZ2dFQkFQRm5mL3NTelpYRTVRcVhVaHVudWpkVzVqaXBsNDREUk5aeVp6WHoKS1VuU245TDV1OGxveUhxalNmL3IrSlR0TzNiZE1hZVdTMEFpZ09hcWpvLzJ1c3hxc0N6bFp6Vm45V1p6bVdWbQo5dlZiRHJSbXg5R1JucXZ3Qm1yZm9YSVlGbWZCN09nY2pjMnZoMkg2cVJ5dlRzRGZaTWpzaFpqQVVGcEo3UHlKCjZKM2NoemdpRm9Yd011cVdTL1drMVo1a0o5aVdSZTA3Y3NzbGc5Z3g4c2tkRnFYNXUzSitBSHRNWUs0dENza1AKcTZRbTFUZzZtVitMT2crNS9uU29OWWhJOWNhT3A3Z0pCL3NhbzhGb3ZrTnlWRTJFaW5LS2xmNWZIbW16ZGFjbwpSWmxIbEJhM3dnM3EwYXZ2K1lFblRTZHF6anVDSkRoQzByY3ZaYjdzZ2pybHdBMENBd0VBQWFBQU1BMEdDU3FHClNJYjNEUUVCQ3dVQUE0SUJBUUI3NzIzSTdFblBsLzNSZ0xFeFo4ZDJraFhEM08ySzgvWlpXb1JOdTZDbzRBTWUKVG0wUExlTHJvNmRpaFlpMUpla2t0a2ljYlNMdmhLbTd0RnBmVER1dzk0T2Z4V3JUbzMrM3ZndFVzQnpyRjJKQQp0aTZoWkZLT2NqUFlrVEh0OEt2ZEZsUUxFTFRNVGt1My9WRitvTzJzbko3Y01RaFlYZjV2UEkwSHNEeFUzOUlUCmxUdzZQRWxubEltQ1oyVlZpcFhaUFM1Zm5tZXVyVzQycUNxSkRzUjU2S3BVdlJkczFGSCtWK1E0dlE5Y0g1djIKQ2tWUElpeC80VVhlb084WS9jb0xCeXFCU1lkZjgrQTUxaTlab0RHZTZhYWtaaEFIeGJ5UzFxVEdVbXVuTndQagpOMDd4U1ZqUW5mN2Rlc0FuYmhUd0tCUGpYbmNKdXl4RUpJbTlWeE1RCi0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo=
+  signerName: kubernetes.io/kube-apiserver-client
+  expirationSeconds: 1186400  # one day
+  usages:
+  - client auth
+EOF
+
+4)Get the list of CSRs:
+kubectl get csr
+
+5)Approve the CSR:
+kubectl certificate approve newuser2
+
+6)Get the certificate (Retrieve the certificate from the CSR):
+kubectl get csr/newuser2 -o yaml
+
+7)Export the issued certificate from the CertificateSigningRequest:
+kubectl get csr newuser2 -o jsonpath='{.status.certificate}'| base64 -d > newuser2.crt
+
+*check validity of cert:
+openssl x509 -noout -dates -in newuser2.crt
+
+8)Create Role and RoleBinding:
+kubectl create role developer3 --verb=create --verb=get --verb=list --verb=update --verb=delete --resource=pods,deployments,secrets,services
+
+kubectl create rolebinding developer3-binding-newuser2 --role=developer3 --user=newuser2
+
+9)Add to kubeconfig:
+kubectl config set-credentials newuser2 --client-key=newuser2.key --client-certificate=newuser2.crt --embed-certs=true
+k config view
+
+9-B)Then, you need to add the context:
+kubectl config set-context newuser2 --cluster=kubernetes --user=newuser2
+kubectl config view
+
+10)To test it, change the context to newuser2:
+kubectl config use-context newuser2
+kubernetes-admin@kubernetes
+
+11)to view current context
+kubectl config current-context
+
+*********************************
+openssl genrsa -out arunlal.key 2048
+openssl req -new -key arunlal.key -out arunlal.csr -subj "/CN=arunlal/O=crybit"
+openssl x509 -req -in arunlal.csr -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key -CAcreateserial -out arunlal.crt -days 100
+kubectl config set-credentials arunlal --client-certificate=/root/arunlal-keys/arunlal.crt  --client-key=/root/arunlal-keys/arunlal.key
+**************************************************
+
+
+
+
+2)Print the names of all deployments in the admin2406 namespace in the following format:
+DEPLOYMENT CONTAINER_IMAGE READY_REPLICAS NAMESPACE
+<deployment name> <container image used> <ready replica count> <Namespace>
+. The data should be sorted by the increasing order of the deployment name.
+
+
+Example:
+DEPLOYMENT CONTAINER_IMAGE READY_REPLICAS NAMESPACE
+deploy0 nginx:alpine 1 admin2406
+Write the result to the file /opt/admin2406_data.
+
+sol:
+$ kubectl -n admin2406 get deployment -o custom-columns=DEPLOYMENT:.metadata.name,CONTAINER_IMAGE:.spec.template.spec.containers[].image,READY_REPLICAS:.status.readyReplicas,NAMESPACE:.metadata.namespace --sort-by=.metadata.name > /opt/admin2406_data
+
+
+5)A new deployment called alpha-mysql has been deployed in the alpha namespace. However, the pods are not running. Troubleshoot and fix the issue. The deployment should make use of the persistent volume alpha-pv to be mounted at /var/lib/mysql and should use the environment variable MYSQL_ALLOW_EMPTY_PASSWORD=1 to make use of an empty root password.
+
+
+Important: Do not alter the persistent volume.
+
+sol:
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-alpha-pvc
+  namespace: alpha
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: slow
+
+
+7)Create a pod called secret-1401 in the admin1401 namespace using the busybox image. The container within the pod should be called secret-admin and should sleep for 4800 seconds.
+
+The container should mount a read-only secret volume called secret-volume at the path /etc/secret-volume. The secret being mounted has already been created for you and is called dotfile-secret.
+
+sol:
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: secret-1401
+  name: secret-1401
+  namespace: admin1401
+spec:
+  volumes:
+  - name: secret-volume
+    # secret volume
+    secret:
+      secretName: dotfile-secret
+  containers:
+  - command:
+    - sleep
+    args:
+    - "4800"
+    image: busybox
+    name: secret-admin
+    # volumes' mount path
+    volumeMounts:
+    - name: secret-volume
+      readOnly: true
+      mountPath: "/etc/secret-volume"
+
+

@@ -1,0 +1,77 @@
+upgrading the controlplane:
+
+1-#####Determine which version to upgrade to
+sudo apt update
+apt-cache madison kubeadm
+
+
+2-#####Upgrade kubeadm
+
+sudo apt-mark unhold kubeadm && \
+sudo apt-get update && sudo apt-get install -y kubeadm=1.22.1-00 && \
+sudo apt-mark hold kubeadm
+
+kubeadm version
+
+kubeadm upgrade plan
+
+3-#####replace x with the patch version you picked for this upgrade
+*sudo kubeadm upgrade apply v1.21.x
+
+4-#####Drain the node
+   #replace <node-to-drain> with the name of your node you are draining
+*kubectl drain <node-to-drain> --ignore-daemonsets
+
+
+5-#####Upgrade the kubelet and kubectl
+
+sudo apt-mark unhold kubelet kubectl && \
+sudo apt-get update && sudo apt-get install -y kubelet=1.22.1-00 kubectl=1.22.1-00 && \
+sudo apt-mark hold kubelet kubectl
+
+6-#####Restart the kubelet:
+*sudo systemctl daemon-reload
+*sudo systemctl restart kubelet
+
+7-#####Uncordon the node
+   #replace <node-to-drain> with the name of your node
+*kubectl uncordon <node-to-drain>
+
+upgrade the workernode:
+
+1-Upgrade kubeadm on workernode: 
+sudo apt-mark unhold kubeadm && \
+sudo apt-get update && sudo apt-get install -y kubeadm=1.22.1-00 && \
+sudo apt-mark hold kubeadm
+
+2-Call "kubeadm upgrade"
+sudo kubeadm upgrade node
+
+3-Drain the node(on master node)
+kubectl drain <node-to-drain> --ignore-daemonsets
+
+4-Upgrade kubelet and kubectl 
+sudo apt-mark unhold kubelet kubectl && \
+sudo apt-get update && sudo apt-get install -y kubelet=1.22.1-00 kubectl=1.22.1-00 && \
+sudo apt-mark hold kubelet kubectl
+
+5-Restart the kubelet:
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+
+6-Uncordon the node (on master node)
+kubectl uncordon <node-to-drain>
+
+7-Verify the status of the cluster
+kubectl get nodes
+
+
+Downgrading
+
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+sudo apt-get update
+sudo apt-get install -y kubelet=1.21.5-00 kubeadm=1.21.5-00 kubectl=1.21.5-00
+sudo apt-mark hold kubelet kubeadm kubectl

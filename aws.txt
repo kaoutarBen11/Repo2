@@ -1,0 +1,88 @@
+Take note that CloudWatch gathers metrics about CPU utilization from the hypervisor for a DB instance while RDS Enhanced Monitoring gathers its metrics from an agent on the instance with more details.
+
+AWS X-Ray helps you debug and analyze your microservices applications with request tracing so you can find the root cause of issues and performance.
+
+Amazon Redshift Spectrum enables you to query and analyze all of your data in Amazon S3 using the open data formats you already use, with no data loading or transformations needed.
+
+rate-based rule in AWS WAF helps to limit the number of requests from a single IP address that is dynamically changing.
+
+the security group can only allow incoming traffic. Remember that you can't deny traffic using security groups
+
+Cross-origin resource sharing (CORS) defines a way for client web applications that are loaded in one domain to interact with resources in a different domain. With CORS support, you can build rich client-side web applications with Amazon S3 and selectively allow cross-origin access to your Amazon S3 resources.
+
+Enabling cross-account access is a feature in IAM and not in Amazon S3.
+
+Enabling Cross-Zone Load Balancing is only used in ELB and not in S3.
+
+Enabling Cross-Region Replication (CRR) is a bucket-level configuration that enables automatic, asynchronous copying of objects across buckets in different AWS Regions.
+
+AWS ParallelCluster is simply an AWS-supported open-source cluster management tool that makes it easy for you to deploy and manage High-Performance Computing (HPC) clusters on AWS
+
+
+Using CloudWatch event or CloudWatch alarm to trigger a lambda function, directly or indirectly, is wasteful of resources. You should just use the EC2 Reboot CloudWatch Alarm Action to reboot the instance. So all the options that trigger the lambda function are incorrect.
+
+AWS Secrets Manager helps you protect secrets needed to access your applications, services, and IT resources. The service enables you to easily rotate, manage, and retrieve database credentials, API keys, and other secrets throughout their lifecycle.
+
+ AWS with Storage Gateway, it is not suitable for transferring large sets of data to AWS. Storage Gateway is mainly used in providing low-latency access to data by caching frequently accessed data on-premises while storing archive data securely and durably in Amazon cloud storage services
+the Amazon Storage Gateway is used only for creating a backup of data from your on-premises server
+
+Enabling S3 Object Lock prevents your existing and future records from being deleted or overwritten.Object lock is a feature of Amazon S3 and not Amazon EFS
+
+What is filter policy?
+A filter policy is a simple JSON object containing attributes that define which messages the subscriber receives. When you publish a message to a topic, Amazon SNS compares the message attributes to the attributes in the filter policy for each of the topic's subscriptions.
+
+
+Amazon Data Lifecycle Manager (Amazon DLM) is an automated procedure to back up the data stored on your Amazon EBS volumes. Use Amazon DLM to create lifecycle policies to automate snapshot management,(the fastest and most cost-effective solution to automatically back up all of your EBS Volumes)
+
+
+AWS WAF is a web application firewall that helps protect your web applications or APIs against common web exploits that may affect availability, compromise security, or consume excessive resources,To detect and mitigate DDoS attacks, you can use AWS WAF in addition to AWS Shield. AWS WAF is a web application firewall that helps detect and mitigate web application layer DDoS attacks by inspecting traffic inline.By using AWS WAF, you can configure web access control lists (Web ACLs) on your CloudFront distributions or Application Load Balancers to filter and block requests based on request signatures
+
+
+Amazon Redshift is a fast, scalable data warehouse that makes it simple and cost-effective to analyze all your data across your data warehouse and data lake.You can use Redshift to analyze all your data using standard SQL and your existing Business Intelligence (BI) tools. It also allows you to run complex analytic queries against terabytes to petabytes of structured and semi-structured data, using sophisticated query optimization, columnar storage on high-performance storage, and massively parallel query execution.or Online Analytics Processing (OLAP).
+
+DynamoDB is a NoSQL database which is based on key-value pairs used for fast processing of small data that dynamically grows and changes. But if you need to scan large amounts of data (ie a lot of keys all in one query), the performance will not be optimal.
+
+
+Amazon RDS is incorrect because this is mainly used for On-Line Transaction Processing (OLTP) applications and not for Online Analytics Processing (OLAP).
+
+ AWS Trusted Advisor only provides best practice recommendations.
+
+AWS Config is a service that enables you to assess, audit, and evaluate the configurations of your AWS resources. Config continuously monitors and records your AWS resource configurations and allows you to automate the evaluation of recorded configurations against desired configurations. 
+
+Multi-AZ won't help when a disaster happens at the AWS region level. Multi-AZ helps when a disaster happens at the AZ level.
+Aurora Global Databases allows you to have an Aurora Replica in another AWS Region, with up to 5 secondary regions.
+
+ The AWS Acceptable Use Policy provides information regarding prohibited actions on the AWS infrastructure.
+
+AWS Trusted Advisor provides recommendations that help you follow AWS best practices. Trusted Advisor evaluates your account by using checks. These checks identify ways to optimize your AWS infrastructure, improve security and performance, reduce costs, and monitor service quotas.
+
+Amazon EMR is managed service that makes it fast, easy, and cost-effective to run Apache Hadoop and Spark to process vast amounts of data.
+
+
+Amazon Redshift is an AWS-proprietary data warehouse service. It makes it fast, simple, and cost-effective to analyze all your data using standard SQL and your existing Business Intelligence (BI) tools. It allows you to run complex analytic queries against terabytes to petabytes of structured and semi-structured data.
+
+AWS Glue is a Serverless data-preparation service for extract, transform, and load (ETL) operations.
+
+AWS Cost Explorer enables you to view and analyze your costs and usage. You can view data for up to the last 12 months, forecast how much you are likely to spend for the next 12 months, and get recommendations for what EC2 reserved instances to purchase.
+
+You want Amazon S3 to monitor your objects’ access patterns. Which storage class should you use?
+In the S3 Intelligent-Tiering storage class, Amazon S3 monitors objects’ access patterns. If you haven’t accessed an object for 30 consecutive days, Amazon S3 automatically moves it to the infrequent access tier, S3 Standard-IA. If you access an object in the infrequent access tier, Amazon S3 automatically moves it to the frequent access tier, S3 Standard.
+
+
+In the S3 Intelligent-Tiering storage class, Amazon S3 moves objects between a frequent access tier and an infrequent access tier. Which storage classes are used for these tiers?
+The two correct response options are:
+
+S3 Standard
+S3 Standard-IA 
+
+In the S3 Intelligent-Tiering storage class, Amazon S3 monitors objects’ access patterns. If you haven’t accessed an object for 30 consecutive days, Amazon S3 automatically moves it to the infrequent access tier, S3 Standard-IA. If you access an object in the infrequent access tier, Amazon S3 automatically moves it to the frequent access tier, S3 Standard.
+
+
+
+Hi I passed the EXAM today,Thanks to Stephane's content and Jon bonso's Q&A.
+It was on par with the practice tests by Stephane(not very difficult not easy). 
+Every word in Stephane's PDF is very important. I was very surprised as there was almost 20 questions on the TYPE OF STORAGE GATEWAY to be used. Every other question started with "You want to migrate your on premise storage"
+Also got lot of questions pertaining to ELB,ASG,CLoudfront and Global Accelerator.. Very Less number of questions on
+VPC,Lambda,Networking Hope this helps!!
+
+Fault tolerance is the ability of a network to function after a component failure.

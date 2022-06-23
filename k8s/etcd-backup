@@ -1,0 +1,29 @@
+etcd-backup
+Take a backup of the etcd cluster and save it to /opt/etcd-backup.db.?
+export ETCDCTL_API=3
+etcdctl snapshot save --endpoints https://[127.0.0.1]:2379 --cacert /etc/kubernetes/pki/etcd/ca.crt --cert /etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key  /opt/etcd-backup.db
+
+nslookup
+volumes types
+
+--cacert=/etc/kubernetes/pki/etcd/ca.crt
+--cert=/etc/kubernetes/pki/etcd/server.crt
+--key=/etc/kubernetes/pki/etcd/server.key
+
+ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key snapshot save /opt/etcd-backup.db
+
+
+
+
+
+cat <<EOF | kubectl apply -f -
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: john-developer
+spec:
+  request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1ZEQ0NBVHdDQVFBd0R6RU5NQXNHQTFVRUF3d0VhbTlvYmpDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRApnZ0VQQURDQ0FRb0NnZ0VCQUxpRjcvUGgrWm9UTGgrZVVtd0RXcHZGWU1oUHFWSjk4L2xpMWN4aU5tS2xhZTBkCnpjZlA4NlZwbnBiYUNnN2pTVVJ6emd6OE45cXloU3ljSUM1QzdNbVZVclY4QjFpTm1LeWZuT3lCdkZXT3hpY08KZnN0YXFGem5WS2tzYnZVVXdLOTZaS0NXWVhJV0Z0WHB2RDB2V0RpYXNldUd5cEpsam8vdThVV29VU3ExdW40KwpNRGNCZ1pscGg0bmdmdW9OMnBma1ZCT2E3ZlNpN2tXeWM1aDljZGZqTk5BcHNtM0prakJLaXZKQ3RSNXhuVmErCjhBeWJjUVovWCtXQlJCdVRSUE8ralR1MG14NnY5Q2ZBdnpZY3U1UzBKZWQ0L1hLRlRhb0NYcStWMHFCdVZwalIKS0d2UEc5alBwcmVsMzBkMHJYYnNiM1NGUU9WNmFBY042NmF2UnlzQ0F3RUFBYUFBTUEwR0NTcUdTSWIzRFFFQgpDd1VBQTRJQkFRQ0JJVW91ZXhUYXdBaWRMbmp3MXZaZnlYenIydXl4bUFXYVNLNG81NUthYmQ0RzNScitnODkvCnpBVGI5N01UaHdZdWdqd0JzeXNjQnF4VDhkZHNSZjdmbGwxdUtGOFkwMGZqYkxpUW0xOTI2eWI3YmhObVROaGEKSGdPamt2YitTOGtuVS9OdlBGbkVuVkM0SjMzcHhMaWlDZURMYjFjdW81TVIwRlFUbDdaTytNbTZtNWdPVmZWNgpVWjFkeERFT1RmWFNJcy90RmFhNXdrbHZ6MEtSTjBZeVJ2OXh3SDNDaDVOdmVtMjdabHJFYmpTRWMwRmlPZDBsCnhiVG9oakdnbW00VGJoQ2J2cGpNL3BJbmw5c2lXelhneEZ5NUw5K1NsVk5CbVhKYTI4WGdsQUxKQzBmdE9hTU8KVVk1RVVzTmJoODBIMHNSZUlJN0dkZ0YrZEdTdk9qTjAKLS0tLS1FTkQgQ0VSVElGSUNBVEUgUkVRVUVTVC0tLS0tCg==
+  signerName: kubernetes.io/kube-apiserver-client
+  usages:
+  - client auth
+EOF
